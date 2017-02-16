@@ -28,6 +28,7 @@ import java.lang.ref.ReferenceQueue;
 public class Context {
     private final static ReferenceQueue<NativeObject> referenceQueue = new ReferenceQueue<NativeObject>();
     private final static Thread finalizingThread = new Thread(new FinalizerRunnable(referenceQueue));
+    final static Context dummyContext = new Context();
 
     static {
         finalizingThread.setName("RealmFinalizingDaemon");

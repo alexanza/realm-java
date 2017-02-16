@@ -32,6 +32,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.realm.OrderedCollectionChange;
+import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.RealmChangeListener;
 import io.realm.RealmConfiguration;
 import io.realm.RealmFieldType;
@@ -480,6 +482,24 @@ public class CollectionTests {
         });
 
         addRowAsync();
+    }
+
+    @Test
+    public void test() {
+        addRow(sharedRealm);
+        final Collection collection = new Collection(sharedRealm, table.where());
+        collection.addListener(collection, new OrderedRealmCollectionChangeListener<Collection>() {
+            @Override
+            public void onChange(Collection collection, OrderedCollectionChange changes) {
+                if (changes != null) {
+                    changes.getDeletionRanges();
+                }
+            }
+        });
+
+        collection.load();
+        addRow(sharedRealm);
+        sharedRealm.refresh();
     }
 
     @Test
